@@ -1,25 +1,29 @@
 function squareController() {
-  this.handleClick = function () {
-    this.value = 'X';
-  }
+
 }
 
 function squareTemplate($element, $attrs) {
   return `
-    <button class="square" ng-click="square.handleClick()">
+    <button class="square" ng-click="square.onClick()">
       {{square.value}}
     </button>`
 }
 
 function boardController() {
   this.status = 'Next player: X';
+  this.squares = Array(9).fill(null);
+  this.handleClick = function (i) {
+    const squares = this.squares.slice();
+    squares[i] = 'X';
+    this.squares = squares;
+  }
 }
 
 function boardTemplate($element, $attrs) {
   // access to $element and $attrs
 
   function renderSquare(i) {
-    return `<square value="${i}"></square>`
+    return `<square value="{{board.squares[${i}]}}" on-click="board.handleClick(${i})"></square>`
   }
 
   return `
@@ -67,7 +71,8 @@ angular.module('ticTacToe', [])
     controllerAs: 'square',
     template: squareTemplate,
     bindings: {
-      value: '@'
+      value: '@',
+      onClick: "&"
     }
   })
   .component('board', {

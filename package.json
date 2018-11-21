@@ -1,0 +1,15 @@
+{
+  "name": "react-tutorial-with-angularjs",
+  "version": "1.0.0",
+  "description": "React Tic Tac Toe tutorial made in AngularJs",
+  "scripts": {
+    "start": "http-server -o -a localhost -p 8000 -c-1 .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Salvador Espinosa",
+  "license": "MIT",
+  "dependencies": {
+    "angular": "^1.7.5",
+    "http-server": "^0.11.1"
+  }
+}

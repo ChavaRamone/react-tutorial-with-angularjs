@@ -1,10 +1,12 @@
 function squareController() {
-
+  this.handleClick = function () {
+    this.value = 'X';
+  }
 }
 
 function squareTemplate($element, $attrs) {
   return `
-    <button class="square">
+    <button class="square" ng-click="square.handleClick()">
       {{square.value}}
     </button>`
 }

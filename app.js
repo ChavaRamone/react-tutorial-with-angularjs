@@ -5,7 +5,7 @@ function squareController() {
 function squareTemplate($element, $attrs) {
   return `
     <button class="square">
-      <!-- TODO -->
+      {{square.value}}
     </button>`
 }
 
@@ -17,7 +17,7 @@ function boardTemplate($element, $attrs) {
   // access to $element and $attrs
 
   function renderSquare(i) {
-    return `<square></square>`
+    return `<square value="${i}"></square>`
   }
 
   return `
@@ -64,6 +64,9 @@ angular.module('ticTacToe', [])
     controller: squareController,
     controllerAs: 'square',
     template: squareTemplate,
+    bindings: {
+      value: '@'
+    }
   })
   .component('board', {
     controller: boardController,

@@ -10,36 +10,21 @@ function squareTemplate($element, $attrs) {
 }
 
 function boardController() {
-  this.status = 'Next player: X';
-  this.squares = Array(9).fill(null);
-  this.xIsNext = true;
-  this.handleClick = function (i) {
-    const squares = this.squares.slice();
-    if (calculateWinner(squares) || squares[i]) {
-      return;
-    }
-    squares[i] = this.xIsNext ? 'X' : 'O';
-    this.squares = squares;
-    this.xIsNext = !this.xIsNext;
-    const winner = calculateWinner(this.squares);
-    if (winner) {
-      this.status = 'Winner: ' + winner;
-    } else {
-      this.status = `Next player: ${this.xIsNext ? 'X' : 'O'}`;
-    }
-  }
+
 }
 
 function boardTemplate($element, $attrs) {
   // access to $element and $attrs
 
   function renderSquare(i) {
-    return `<square value="{{board.squares[${i}]}}" on-click="board.handleClick(${i})"></square>`
+    return `
+      <square 
+        value="{{board.squares[${i}]}}" on-click="board.onClick(${i})">
+        </square>`
   }
 
   return `
     <div>
-      <div class="status">{{board.status}}</div>
       <div class="board-row">
         ${renderSquare(0)}
         ${renderSquare(1)}
@@ -59,7 +44,33 @@ function boardTemplate($element, $attrs) {
 }
 
 function gameController() {
+  this.status = 'Next player: X';
+  this.history = [{
+    squares: Array(9).fill(null)
+  }];
+  this.current = this.history[this.history.length - 1];
+  this.xIsNext = true;
 
+  this.handleClick = function (i) {
+    const history = this.game.history;
+    const current = history[history.length - 1];
+    const squares = current.squares.slice();
+    if (calculateWinner(squares) || squares[i]) {
+      return;
+    }
+    squares[i] = this.game.xIsNext ? 'X' : 'O';
+    this.game.history = history.concat([{
+      squares: squares,
+    }]);
+    this.game.current = this.game.history[this.game.history.length - 1];
+    this.game.xIsNext = !this.game.xIsNext;
+    const winner = calculateWinner(squares);
+    if (winner) {
+      this.game.status = 'Winner: ' + winner;
+    } else {
+      this.game.status = `Next player: ${this.game.xIsNext ? 'X' : 'O'}`;
+    }
+  }
 }
 
 function gameTemplate($element, $attrs) {
@@ -67,10 +78,11 @@ function gameTemplate($element, $attrs) {
   return `
     <div class="game">
       <div class="game-board">
-        <board />
+        <board squares="game.current.squares" on-click="game.handleClick">
+        </board>
       </div>
       <div class="game-info">
-        <div><!-- status --></div>
+        <div>{{game.status}}</div>
         <ol><!-- TODO --></ol>
       </div>
     </div>`
@@ -110,9 +122,16 @@ angular.module('ticTacToe', [])
     controller: boardController,
     controllerAs: 'board',
     template: boardTemplate,
+    bindings: {
+      squares: '=',
+      onClick: "="
+    },
+    require: {
+      game: '^game'
+    }
   })
   .component('game', {
     controller: gameController,
     controllerAs: 'game',
-    template: gameTemplate,
+    template: gameTemplate
   })

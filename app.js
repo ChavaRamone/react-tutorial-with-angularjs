@@ -12,10 +12,13 @@ function squareTemplate($element, $attrs) {
 function boardController() {
   this.status = 'Next player: X';
   this.squares = Array(9).fill(null);
+  this.xIsNext = true;
   this.handleClick = function (i) {
     const squares = this.squares.slice();
-    squares[i] = 'X';
+    squares[i] = this.xIsNext ? 'X' : 'O';
     this.squares = squares;
+    this.xIsNext = !this.xIsNext;
+    this.status = `Next player: ${this.xIsNext ? 'X' : 'O'}`
   }
 }
 

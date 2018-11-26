@@ -49,6 +49,9 @@ function gameController() {
     squares: Array(9).fill(null)
   }];
   this.current = this.history[this.history.length - 1];
+  this.moves = this.history.map(() => {
+    return 'Go to game start';
+  });
   this.xIsNext = true;
 
   this.handleClick = function (i) {
@@ -70,6 +73,11 @@ function gameController() {
     } else {
       this.game.status = `Next player: ${this.game.xIsNext ? 'X' : 'O'}`;
     }
+    this.game.moves = this.game.history.map((step, move) => {
+      return move ?
+        'Go to move #' + move :
+        'Go to game start';
+    });
   }
 }
 
@@ -83,7 +91,11 @@ function gameTemplate($element, $attrs) {
       </div>
       <div class="game-info">
         <div>{{game.status}}</div>
-        <ol><!-- TODO --></ol>
+        <ol>
+          <li ng-repeat="move in game.moves">
+            <button ng-click="game.jumpTo($index)">{{move}}</button>
+          </li>
+        </ol>
       </div>
     </div>`
 }

@@ -53,9 +53,10 @@ function gameController() {
     return 'Go to game start';
   });
   this.xIsNext = true;
+  this.step = 0;
 
   this.handleClick = function (i) {
-    const history = this.game.history;
+    const history = this.game.history.slice(0, this.game.step + 1);
     const current = history[history.length - 1];
     const squares = current.squares.slice();
     if (calculateWinner(squares) || squares[i]) {
@@ -66,6 +67,7 @@ function gameController() {
       squares: squares,
     }]);
     this.game.current = this.game.history[this.game.history.length - 1];
+    this.game.step = history.length;
     this.game.xIsNext = !this.game.xIsNext;
     const winner = calculateWinner(squares);
     if (winner) {
@@ -78,6 +80,18 @@ function gameController() {
         'Go to move #' + move :
         'Go to game start';
     });
+  }
+
+  this.jumpTo = function (step) {
+    this.step = step;
+    this.xIsNext = (step % 2) === 0;
+    this.current = this.history[this.step];
+    const winner = calculateWinner(this.current.squares);
+    if (winner) {
+      this.status = 'Winner: ' + winner;
+    } else {
+      this.status = `Next player: ${this.xIsNext ? 'X' : 'O'}`;
+    }
   }
 }
 
